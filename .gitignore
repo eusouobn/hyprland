@@ -1,0 +1,30 @@
+# Segredos e dados sensíveis
+.config/gh/
+.gnupg/
+.npm/
+.config/mozilla/
+
+# Caches e temporários
+.cache/
+*/cache/
+**/*.bak
+**/*~
+*.swp
+
+# Histórico e logs
+.bash_history
+.bash_logout
+*.log
+
+# Dados de apps (grandes/não-portáveis)
+.local/share/clipman.json
+.config/opencode/
+.config/session/
+.config/KDE/
+.config/pulse/
+
+# Ferramentas externas com estado
+go/
+yay-bin/
+Downloads/
+Imagens/
