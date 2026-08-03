@@ -29,6 +29,7 @@ sudo pacman -S hyprland waybar kitty grim slurp wl-clipboard swww \
 - `.config/waybar/` — barra (config.jsonc + style.css)
 - `.config/gtk-3.0/` e `.config/gtk-4.0/` — tema GTK (Qogir)
 - `.config/scripts/` — scripts utilitários (screenshot, monitor, pacotes)
+- `.config/scripts/hypr-amd.sh` — instalação pós-formatação (yay, Hyprland, AMD, wine, fontes e dotfiles)
 
 ## Keybinds principais
 
