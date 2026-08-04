@@ -354,6 +354,83 @@ ok "Caminhos ajustados para $USER"
 quote
 
 # ──────────────────────────────────────────────
+# 6b. Detectar resolução/refreshrate máximos e ajustar escala
+# ──────────────────────────────────────────────
+step "🖥️ Detectando resolução máxima do monitor..."
+
+HYPR_LUA="$HOME/.config/hypr/hyprland.lua"
+
+python3 - "$HYPR_LUA" << 'PYEOF' || warn "Falha ao detectar monitor — mantendo config padrão"
+import os, re, sys, glob
+
+LUA = sys.argv[1]
+
+def parse_edid(path):
+    try:
+        data = open(path, "rb").read()
+    except OSError:
+        return None
+    if len(data) < 128 or data[:8] != b"\x00\xff\xff\xff\xff\xff\xff\x00":
+        return None
+    dtd = data[0x36:0x48]
+    pclk = (dtd[0] | (dtd[1] << 8)) * 10000
+    ha = ((dtd[4] & 0xF0) << 4) | dtd[2]
+    hbl = ((dtd[4] & 0x0F) << 8) | dtd[3]
+    va = ((dtd[7] & 0xF0) << 4) | dtd[5]
+    vbl = ((dtd[7] & 0x0F) << 8) | dtd[6]
+    ht, vt = ha + hbl, va + vbl
+    if ht == 0 or vt == 0:
+        return None
+    return (ha, va, round(pclk / (ht * vt)))
+
+connector = None
+for p in sorted(glob.glob("/sys/class/drm/card*-*/status")):
+    try:
+        if open(p).read().strip() == "connected":
+            base = p[:p.rfind("/status")]
+            if os.path.exists(base + "/edid"):
+                connector = base
+                break
+    except OSError:
+        continue
+
+if connector is None:
+    sys.exit(1)
+
+info = parse_edid(connector + "/edid")
+if info is None:
+    sys.exit(1)
+
+w, h, rr = info
+if w >= 3840 or h >= 2160:
+    scale = "2"
+elif w >= 2560 or h >= 1440:
+    scale = "1.5"
+else:
+    scale = "1"
+
+mode = f"{w}x{h}@{rr}Hz"
+
+if not os.path.isfile(LUA):
+    sys.exit(1)
+
+src = open(LUA).read()
+new = re.sub(r'(\bmode\s*=\s*)"[^"]*"', r'\g<1>"%s"' % mode, src)
+new = re.sub(r'(\bscale\s*=\s*)\d+(?:\.\d+)?', r'\g<1>%s' % scale, new)
+open(LUA, "w").write(new)
+print(f"{mode} scale={scale}")
+PYEOF
+
+if grep -q 'scale    = 2' "$HYPR_LUA" 2>/dev/null; then
+  ok "Escala 2x detectada (4K)"
+elif grep -q 'scale    = 1.5' "$HYPR_LUA" 2>/dev/null; then
+  ok "Escala 1.5x detectada (1440p)"
+elif grep -q 'scale    = 1' "$HYPR_LUA" 2>/dev/null; then
+  ok "Escala 1x detectada (1080p)"
+fi
+quote
+
+# ──────────────────────────────────────────────
 # 7. SDDM (tela de login)
 # ──────────────────────────────────────────────
 step "🚀 Configurando SDDM..."
