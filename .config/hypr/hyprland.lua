@@ -224,8 +224,8 @@ for i = 1, 4 do
 end
 
 -- Alt+Tab: alternar foco entre janelas (segurar Tab cicla)
-hl.bind("ALT + Tab", hl.dsp.window.cycle_next({ tiled = true }), { repeating = true })
-hl.bind("ALT + SHIFT + Tab", hl.dsp.window.cycle_next({ tiled = true, next = false }), { repeating = true })
+hl.bind("ALT + Tab", hl.dsp.window.cycle_next({ tiled = true, floating = true }), { repeating = true })
+hl.bind("ALT + SHIFT + Tab", hl.dsp.window.cycle_next({ tiled = true, floating = true, next = false }), { repeating = true })
 
 -- Print: capturar a tela, salvar e copiar para a área de transferência
 hl.bind("Print", hl.dsp.exec_cmd("mkdir -p \"$HOME/Imagens/Screenshots\" && grim - | tee \"$HOME/Imagens/Screenshots/Screenshot-$(date +'%Y-%m-%d_%H-%M-%S').png\" | wl-copy"))
