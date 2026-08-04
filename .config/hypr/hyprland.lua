@@ -92,7 +92,7 @@ hl.config({
 
         resize_on_border = false,
 
-        allow_tearing = false,
+        allow_tearing = true,
 
         layout = "dwindle",
     },
@@ -289,4 +289,17 @@ hl.window_rule({
 
     float = true,
     size  = "1 1",
+})
+
+-- Tearing apenas em jogos (reduce latência em fullscreen)
+hl.window_rule({
+    name  = "tearing-cs2",
+    match = { class = "cs2" },
+    immediate = true,
+})
+
+hl.window_rule({
+    name  = "tearing-hl2",
+    match = { class = "hl2_linux" },
+    immediate = true,
 })
