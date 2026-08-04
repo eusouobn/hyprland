@@ -21,7 +21,6 @@
 	"modules-right": [
         "custom/updater",
         "cpu",
-        "custom/gpu",
         "memory",
         "disk",
         "pulseaudio",
@@ -61,11 +60,6 @@
     "return-type": "json",
     "interval": 2
 },
-"custom/gpu": {
-"exec": "~/.config/hypr/scripts/amd_gpu_usage.sh",
-"interval": 2,
-"tooltip": false
-  },
 
 "idle_inhibitor": {
     "format": "{icon}",
