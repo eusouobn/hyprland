@@ -217,6 +217,12 @@ hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit")) -- dwindle
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }))
 hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd("poweroff"))
 
+-- Trocar de workspace com Mod + 1..4 e mover a janela atual com CTRL + 1..4
+for i = 1, 4 do
+    hl.bind(mainMod .. " + " .. i, hl.dsp.focus({ workspace = i }))
+    hl.bind("CTRL + " .. i, hl.dsp.window.move({ workspace = i }))
+end
+
 -- Print: capturar a tela, salvar e copiar para a área de transferência
 hl.bind("Print", hl.dsp.exec_cmd("mkdir -p \"$HOME/Imagens/Screenshots\" && grim - | tee \"$HOME/Imagens/Screenshots/Screenshot-$(date +'%Y-%m-%d_%H-%M-%S').png\" | wl-copy"))
 
