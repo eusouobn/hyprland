@@ -201,6 +201,9 @@ OFFICIAL_PACKAGES=(
   unrar unrar-free unzip pacman-contrib xdg-user-dirs xdg-user-dirs-gtk
   archlinux-xdg-menu swaylock-effects wlogout ffmpeg ffmpegthumbs ffmpegthumbnailer
   swayidle xorg-xwayland ttf-ms-fonts
+
+  # ── Gaming ──
+  mangohud lib32-mangohud
 )
 
 step "📦 Instalando pacotes oficiais..."
@@ -641,6 +644,15 @@ else
   info "pacman: ParallelDownloads já configurado"
 fi
 
+# Habilitar multilib (necessário para lib32-mangohud, steam, wine 32-bit)
+if grep -q "^#\[multilib\]" /etc/pacman.conf; then
+  sudo sed -i '/^#\[multilib\]/,+1 s/^#//' /etc/pacman.conf
+  sudo pacman -Sy 2>/dev/null || true
+  ok "pacman: multilib habilitado"
+else
+  info "pacman: multilib já habilitado ou não necessário"
+fi
+
 if systemctl is-enabled fstrim.timer &>/dev/null; then
   ok "fstrim.timer já habilitado"
 elif lsblk -d -o ROTA 2>/dev/null | grep -q "^0$"; then
@@ -679,6 +691,40 @@ sudo pacman -S --needed --noconfirm \
   wine winetricks wine-mono wine-gecko \
   ntfs-3g exfat-utils dosfstools btrfs-progs xfsprogs jfsutils f2fs-tools reiserfsprogs nilfs-utils udftools e2fsprogs
 ok "Wine e filesystems instalados"
+quote
+
+# ──────────────────────────────────────────────
+# 13b. MangoHud (overlay FPS)
+# ──────────────────────────────────────────────
+step "🎮 Configurando MangoHud..."
+info "Gera ~/.config/MangoHud/MangoHud.conf com CPU/GPU detectados automaticamente"
+
+MANGOHUD_SCRIPT="$HOME/.config/scripts/mangohud-config.sh"
+if [ -f "$MANGOHUD_SCRIPT" ]; then
+  bash "$MANGOHUD_SCRIPT" || warn "Falha ao gerar config do MangoHud"
+else
+  warn "mangohud-config.sh não encontrado em ~/.config/scripts"
+fi
+
+# Perguntar se quer habilitar globalmente (padrão: Sim — só apertar Enter)
+ENV_FILE="$HOME/.config/environment.d/95-mangohud.conf"
+echo ""
+echo -n "  Habilitar MangoHud globalmente (MANGOHUD=1 em todos os apps)? [S/n]: "
+read -r ENABLE_MANGOHUD
+case "${ENABLE_MANGOHUD:-S}" in
+  s|S|y|Y|"")
+    if grep -q "^MANGOHUD=1" "$ENV_FILE" 2>/dev/null; then
+      ok "MANGOHUD=1 já está no environment do Hyprland"
+    else
+      mkdir -p "$HOME/.config/environment.d"
+      echo "MANGOHUD=1" >> "$ENV_FILE"
+      ok "MANGOHUD=1 adicionado ao environment do Hyprland (reinicie a sessão para valer)"
+    fi
+    ;;
+  *)
+    warn "MangoHud não habilitado globalmente — use Shift_R+F12 para alternar por jogo"
+    ;;
+esac
 quote
 
 # ──────────────────────────────────────────────
