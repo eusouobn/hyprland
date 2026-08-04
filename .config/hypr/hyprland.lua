@@ -238,6 +238,10 @@ hl.bind(mainMod .. " + SHIFT + left",  hl.dsp.window.resize({ x = -100, y = 0 })
 hl.bind(mainMod .. " + SHIFT + down",  hl.dsp.window.resize({ x = 0, y = 100 }))
 hl.bind(mainMod .. " + SHIFT + up",    hl.dsp.window.resize({ x = 0, y = -100 }))
 
+-- Mover e redimensionar janelas com o mouse (Mod + LMB move, Mod + RMB redimensiona)
+hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
+hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
+
 --------------------------------
 ---- WINDOWS AND WORKSPACES ----
 --------------------------------
