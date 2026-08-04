@@ -101,8 +101,12 @@ hyprland/
 ├── .config/
 │   ├── hypr/             ← hyprland.conf, scripts de monitor
 │   ├── waybar/           ← Config da barra (config.jsonc + style.css)
-│   ├── gtk-3.0/ gtk-4.0/ ← Tema GTK
-│   ├── kitty/            ← Terminal
+│   ├── gtk-3.0/ gtk-4.0/ ← Tema GTK + fontes
+│   ├── qt5ct/ qt6ct/     ← Tema Qt (fontes)
+│   ├── xsettingsd/       ← Config GTK2 (fontes)
+│   ├── kdeglobals        ← Tema KDE (fontes, ícones)
+│   ├── fontconfig/       ← Resolução de fontes do sistema
+│   ├── kitty/            ← Terminal (monoespaçada)
 │   └── scripts/          ← Scripts utilitários (screenshot, monitor, pacotes)
 └── README.md
 ```
@@ -112,3 +116,4 @@ hyprland/
 - **Atualizar o sistema**: `sudo pacman -Syu`
 - **Instalar programas do AUR**: `yay -S nome-do-pacote`
 - **Mudar tema de ícones**: `nwg-look`
+- **Fontes**: sistema usa **Ubuntu Bold** (normal) e **Ubuntu Mono Nerd Font Bold** (monoespaçada) — configurado via GTK, Qt, KDE, fontconfig e Waybar
