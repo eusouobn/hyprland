@@ -273,3 +273,12 @@ hl.window_rule({
     move  = "20 monitor_h-120",
     float = true,
 })
+
+-- KCalc: sempre flutuante, no menor tamanho possível
+hl.window_rule({
+    name  = "kcalc-float-min",
+    match = { class = "org.kde.kcalc" },
+
+    float = true,
+    size  = "1 1",
+})
