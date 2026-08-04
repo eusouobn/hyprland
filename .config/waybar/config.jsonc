@@ -19,7 +19,6 @@
         "hyprland/workspaces",
         ],
 	"modules-right": [
-        "custom/updater",
         "cpu",
         "memory",
         "disk",
@@ -215,17 +214,6 @@
 	"max-length": 30
 },
    
-"custom/updater": {
-    "format": "<span color='#f75f5f'></span> {}",
-    "exec": ".config/hypr/scripts/check_and_update.sh",
-    "exec-if": "exit 0",
-    "return-type": "json",
-    "interval": 900,
-    "tooltip": "false",
-    "on-click": "kitty --hold bash -c '$HOME/.config/hypr/scripts/upgrade.sh;'",
-    "on-click-right": "kitty --hold bash -c '~/.config/hypr/scripts/check_and_update.sh; cat /tmp/waybar-updates-list;'",
-    "signal": 8
-},
    // Notification
     "custom/notification": {
     "tooltip": false,
