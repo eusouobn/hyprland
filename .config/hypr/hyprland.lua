@@ -56,6 +56,9 @@ hl.env("XDG_CURRENT_DESKTOP", "KDE")
 hl.env("KDE_FULL_SESSION", "true")
 hl.env("KDE_SESSION_VERSION", "6")
 
+-- MangoHud global em todos os apps (inclui jogos)
+hl.env("MANGOHUD", "1")
+
 -- Firefox Wayland
 hl.env("MOZ_ENABLE_WAYLAND", "1")
 
