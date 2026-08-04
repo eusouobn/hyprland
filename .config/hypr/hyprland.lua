@@ -227,6 +227,10 @@ end
 hl.bind("ALT + Tab", hl.dsp.window.cycle_next({ tiled = true, floating = true }), { repeating = true })
 hl.bind("ALT + SHIFT + Tab", hl.dsp.window.cycle_next({ tiled = true, floating = true, next = false }), { repeating = true })
 
+-- Alternar workspace com Mod + scroll do mouse
+hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
+hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
+
 -- Print: capturar a tela, salvar e copiar para a área de transferência
 hl.bind("Print", hl.dsp.exec_cmd("mkdir -p \"$HOME/Imagens/Screenshots\" && grim - | tee \"$HOME/Imagens/Screenshots/Screenshot-$(date +'%Y-%m-%d_%H-%M-%S').png\" | wl-copy"))
 
