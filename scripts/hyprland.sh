@@ -171,10 +171,10 @@ OFFICIAL_PACKAGES=(
   hyprland sddm
 
   # ── Barra / utilidades Wayland ──
-  waybar grim slurp wl-clipboard clipman swaync awww
+  waybar grim slurp wl-clipboard swaync awww
 
   # ── Launcher / visual ──
-  rofi nwg-drawer nwg-look waypaper wofi
+  rofi nwg-drawer nwg-look wofi
 
   # ── Portais xdg ──
   xdg-desktop-portal xdg-desktop-portal-hyprland xdg-desktop-portal-gtk xdg-desktop-portal-wlr
@@ -199,8 +199,8 @@ OFFICIAL_PACKAGES=(
 
   # ── Utilitários ──
   unrar unrar-free unzip pacman-contrib xdg-user-dirs xdg-user-dirs-gtk
-  archlinux-xdg-menu swaylock-effects wlogout ffmpeg ffmpegthumbs ffmpegthumbnailer
-  swayidle xorg-xwayland ttf-ms-fonts
+  archlinux-xdg-menu ffmpeg ffmpegthumbs ffmpegthumbnailer
+  swayidle xorg-xwayland
 
   # ── Gaming ──
   mangohud lib32-mangohud
@@ -220,6 +220,11 @@ quote
 # 3b. Pacotes AUR
 # ──────────────────────────────────────────────
 AUR_PACKAGES=(
+  clipman
+  waypaper
+  swaylock-effects
+  wlogout
+  ttf-ms-fonts
   grimblast-git
   oh-my-posh-bin
   protonup-qt-bin
@@ -268,7 +273,7 @@ if lspci | grep -qi "vga\|3d\|display" | grep -qi "amd\|radeon" || lspci | grep 
   info "GPU AMD detectada — instalando mesa + vulkan-radeon..."
   sudo pacman -S --needed --noconfirm \
     mesa lib32-mesa mesa-utils vulkan-radeon lib32-vulkan-radeon \
-    llvm lib32-llvm vulkan-tools mesa-vdpau lib32-mesa-vdpau xf86-video-amdgpu
+    llvm lib32-llvm vulkan-tools xf86-video-amdgpu
   ok "Drivers AMD instalados"
 elif lspci | grep -qi nvidia; then
   info "GPU NVIDIA detectada — instalando nvidia-open-dkms..."
@@ -418,8 +423,14 @@ if not os.path.isfile(LUA):
     sys.exit(1)
 
 src = open(LUA).read()
-new = re.sub(r'(\bmode\s*=\s*)"[^"]*"', r'\g<1>"%s"' % mode, src)
-new = re.sub(r'(\bscale\s*=\s*)\d+(?:\.\d+)?', r'\g<1>%s' % scale, new)
+
+def set_monitor_fields(m):
+    blk = m.group(0)
+    blk = re.sub(r'(mode\s*=\s*)"[^"]*"', r'\g<1>"%s"' % mode, blk)
+    blk = re.sub(r'(scale\s*=\s*)\d+(?:\.\d+)?', r'\g<1>%s' % scale, blk)
+    return blk
+
+new = re.sub(r'hl\.monitor\(\{(?:[^{}]|\{[^{}]*\})*\}\)', set_monitor_fields, src)
 open(LUA, "w").write(new)
 print(f"{mode} scale={scale}")
 PYEOF
@@ -689,7 +700,7 @@ step "🍷 Instalando wine e suporte a filesystems..."
 
 sudo pacman -S --needed --noconfirm \
   wine winetricks wine-mono wine-gecko \
-  ntfs-3g exfat-utils dosfstools btrfs-progs xfsprogs jfsutils f2fs-tools reiserfsprogs nilfs-utils udftools e2fsprogs
+  ntfs-3g exfat-utils dosfstools btrfs-progs xfsprogs jfsutils f2fs-tools nilfs-utils udftools e2fsprogs
 ok "Wine e filesystems instalados"
 quote
 

@@ -52,14 +52,14 @@ EMAIL_GITHUB="eusouobn@users.noreply.github.com"
 banner
 
 # ──────────────────────────────────────────────
-# 1. Instalar gh (GitHub CLI)
+# 1. Instalar github-cli (GitHub CLI, binário: gh)
 # ──────────────────────────────────────────────
 step "📦 Instalando GitHub CLI"
 if command -v gh &>/dev/null; then
   ok "gh já instalado: $(gh --version | head -1)"
 else
-  info "Instalando gh..."
-  sudo pacman -S --needed --noconfirm gh
+  info "Instalando github-cli..."
+  sudo pacman -S --needed --noconfirm github-cli
   ok "gh instalado"
 fi
 
