@@ -553,6 +553,36 @@ else
   arch-chroot /mnt systemctl enable pulseaudio.service pulseaudio.socket 2>/dev/null || true
 fi
 
+# ──────────────────────────────────────────────
+# Helper: baixa scripts de pós-instalação do repo
+# ──────────────────────────────────────────────
+REPO_RAW="https://raw.githubusercontent.com/eusouobn/hyprland/main/scripts"
+
+# Baixa script do repo se não estiver presente em /root/scripts/
+fetch_script() {
+  local name="$1"
+  local dst="/root/scripts/$name"
+  mkdir -p /root/scripts
+  if [ -f "$dst" ]; then
+    return 0
+  fi
+  info "Baixando $name do repo..."
+  rm -f "$dst"
+  if command -v curl &>/dev/null; then
+    curl -fsSL -o "$dst" "$REPO_RAW/$name" || true
+  else
+    wget -q -O "$dst" "$REPO_RAW/$name" || true
+  fi
+  if [ ! -s "$dst" ]; then
+    rm -f "$dst"
+    warn "Falha ao baixar $name — instale-o manualmente em /root/scripts/$name depois"
+    return 1
+  fi
+  chmod +x "$dst"
+  ok "$name baixado"
+  return 0
+}
+
 case "$DE" in
   Budgie)
     arch-chroot /mnt pacman -S --noconfirm $BASE_PKGS \
@@ -649,7 +679,7 @@ case "$DE" in
     fi
 
     # Copiar github.sh (autenticação GitHub para o OpenCode)
-    if [ -f /root/scripts/github.sh ]; then
+    if fetch_script github.sh; then
       cp /root/scripts/github.sh "/mnt/home/$USERNAME/scripts/"
       chroot /mnt chown "$USERNAME:users" "/home/$USERNAME/scripts/github.sh"
       ok "github.sh copiado"
@@ -667,15 +697,15 @@ case "$DE" in
     info "Copiando scripts para /mnt/home/$USERNAME/scripts..."
     mkdir -p "/mnt/home/$USERNAME/scripts"
 
-    # Copiar hyprland.sh do repo (se disponível)
-    if [ -f /root/scripts/hyprland.sh ]; then
+    # Copiar hyprland.sh do repo (baixa automaticamente se necessário)
+    if fetch_script hyprland.sh; then
       cp /root/scripts/hyprland.sh "/mnt/home/$USERNAME/scripts/"
       chroot /mnt chown "$USERNAME:users" "/home/$USERNAME/scripts/hyprland.sh"
       ok "hyprland.sh copiado"
     fi
 
     # Copiar github.sh (autenticação GitHub para o OpenCode)
-    if [ -f /root/scripts/github.sh ]; then
+    if fetch_script github.sh; then
       cp /root/scripts/github.sh "/mnt/home/$USERNAME/scripts/"
       chroot /mnt chown "$USERNAME:users" "/home/$USERNAME/scripts/github.sh"
       ok "github.sh copiado"
